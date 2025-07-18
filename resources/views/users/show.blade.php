@@ -29,6 +29,21 @@
                     <h2 class="text-lg font-semibold text-gray-900">Informations personnelles</h2>
                 </div>
                 <div class="p-6">
+                    <!-- Avatar Section -->
+                    <div class="mb-6 flex justify-center">
+                        <div class="relative">
+                            @if($user->avatar)
+                                <img src="{{ Storage::url($user->avatar) }}"
+                                     alt="Avatar de {{ $user->name }}"
+                                     class="w-24 h-24 rounded-full object-cover border-4 border-gray-200 shadow-sm">
+                            @else
+                                <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center border-4 border-gray-200 shadow-sm">
+                                    <i class="fas fa-user text-gray-400 text-2xl"></i>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Name -->
                         <div>
@@ -41,6 +56,14 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adresse email</label>
                             <div class="text-sm text-gray-900">{{ $user->email }}</div>
                         </div>
+
+                        <!-- Phone -->
+                        @if($user->phone)
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
+                            <div class="text-sm text-gray-900">{{ $user->phone }}</div>
+                        </div>
+                        @endif
 
                         <!-- Role -->
                         <div>
@@ -79,6 +102,14 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Dernière modification</label>
                             <div class="text-sm text-gray-900">{{ $user->updated_at->format('d/m/Y H:i') }}</div>
                         </div>
+
+                        <!-- Address -->
+                        @if($user->address)
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
+                            <div class="text-sm text-gray-900">{{ $user->address }}</div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -86,6 +117,31 @@
 
         <!-- Statistics -->
         <div class="space-y-6">
+            <!-- User Avatar Card -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Profil</h2>
+                </div>
+                <div class="p-6 text-center">
+                    <div class="relative mb-4">
+                        @if($user->avatar)
+                            <img src="{{ Storage::url($user->avatar) }}"
+                                 alt="Avatar de {{ $user->name }}"
+                                 class="w-20 h-20 rounded-full object-cover mx-auto border-4 border-gray-200 shadow-sm">
+                        @else
+                            <div class="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mx-auto border-4 border-gray-200 shadow-sm">
+                                <i class="fas fa-user text-gray-400 text-xl"></i>
+                            </div>
+                        @endif
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900">{{ $user->name }}</h3>
+                    <p class="text-sm text-gray-600">{{ $user->email }}</p>
+                    @if($user->phone)
+                    <p class="text-sm text-gray-600 mt-1">{{ $user->phone }}</p>
+                    @endif
+                </div>
+            </div>
+
             <!-- Stats Cards -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div class="p-6 border-b border-gray-200">
@@ -151,7 +207,7 @@
                             <div class="text-xs text-gray-500">{{ $invoice->created_at->format('d/m/Y H:i') }}</div>
                         </div>
                     </div>
-                    <div class="text-sm text-gray-900">{{ number_format($invoice->total_amount, 0, ',', ' ') }} FCFA</div>
+                    <div class="text-sm text-gray-900">{{ number_format($invoice->total, 0, ',', ' ') }} FCFA</div>
                 </div>
                 @empty
                 <div class="text-center py-8 text-gray-500">

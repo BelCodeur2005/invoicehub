@@ -25,14 +25,27 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $credential = $request->validated();
-        if(Auth::attempt($credential)){
+        $credentials = $request->validated();
+
+        // Tentative de connexion
+        if (Auth::attempt($credentials)) {
+            // Vérifier si l'utilisateur est actif
+            if (!auth()->user()->is_active) {
+                // Déconnecter l'utilisateur
+                Auth::logout();
+
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Votre compte a été désactivé. Veuillez contacter l\'administrateur.'
+                ])->onlyInput('email');
+            }
+
+            // Si l'utilisateur est actif, régénérer la session
             $request->session()->regenerate();
             return redirect()->intended(route('dashboard'));
         }
 
-        return to_route('login')->withErrors([
-            'email' => 'Email invalide'
+        return redirect()->route('login')->withErrors([
+            'email' => 'Email ou mot de passe invalide'
         ])->onlyInput('email');
     }
 
@@ -41,11 +54,18 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request)
     {
-
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('login');
     }
-    public function logout(){
+
+    /**
+     * Logout method
+     */
+    public function logout()
+    {
         Auth::logout();
         return redirect()->route('login');
-
     }
 }
